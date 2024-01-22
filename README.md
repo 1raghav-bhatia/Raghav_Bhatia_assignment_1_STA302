@@ -1,4 +1,4 @@
-# Raghav_Bhatia_assignment_1_STA302
+# Repository Overview
 ## File Structure
 The repo is structured as:
  - *input/data* contains the data sources used in analysis including the raw data.
