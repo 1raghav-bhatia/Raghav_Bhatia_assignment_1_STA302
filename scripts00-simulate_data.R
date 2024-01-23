@@ -3,9 +3,6 @@
 # Author: Raghav Bhatia
 # Date: 23 January 2024
 # Contact: raghav.bhatia@mail.utoronto.ca 
-# License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
 
 
 #### Workspace setup ####
