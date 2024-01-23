@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Simulates the income expenditure data for 3 types of households
+# Purpose: Cleans the income expenditure data for 3 types of households
 # Author: Raghav Bhatia
 # Date: 23 January 2024
 # Contact: raghav.bhatia@mail.utoronto.ca 
