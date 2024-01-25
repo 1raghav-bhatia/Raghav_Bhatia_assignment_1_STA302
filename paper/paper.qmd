@@ -212,7 +212,7 @@ Without_sub_mkt_rent_chart <- Without_subsidies_mkt_rent |>
   theme_minimal() + # Make the theme neater
   labs(x = "Household on Income Support", y = "Percentage of Income for Rent") + # Make labels more meaningful
   scale_y_continuous(limits = c(0, 200))
-
+Without_sub_mkt_rent_chart
 ```
 
 ```{r}
@@ -250,6 +250,7 @@ Without_sub_avg_rent_chart <- Without_sub_avg_rent |>
   theme_minimal() + # Make the theme neater
   labs(x = "Household on Income Support", y = "Percentage of Income for Rent") + # Make labels more meaningful
   scale_y_continuous(limits = c(0, 200))
+Without_sub_avg_rent_chart
 
 ```
 
@@ -296,6 +297,7 @@ Without_sub_avg_rent_chart <- Without_sub_avg_rent |>
   theme_minimal() + # Make the theme neater
   labs(x = "Household on Income Support", y = "Percentage of Income for Rent") + # Make labels more meaningful
   scale_y_continuous(limits = c(0, 200))
+Without_sub_avg_rent_chart
 ```
 
 ```{r}
@@ -318,6 +320,7 @@ With_subsidies_chart <- With_subsidies |>
   theme_minimal() + # Make the theme neater
   labs(x = "Household on Income Support", y = "Percentage of Income for Rent") + # Make labels more meaningful
   scale_y_continuous(limits = c(0, 200))
+With_subsidies_chart
 ```
 
 
