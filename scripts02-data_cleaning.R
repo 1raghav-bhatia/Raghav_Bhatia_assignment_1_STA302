@@ -26,11 +26,11 @@ With_sub_cleaned <-
          scenario_4_single_parent_household_with_2_children_ontario_works,
          scenario_5_one_person_household_ontario_works 
   ) |>
-  rename(Family_of_Four_on_Full_Income_Support = 
+  rename(Family_of_Four = 
            scenario_1_family_of_four_ontario_works,
-         Single_Parent_on_Full_Income_Support = 
+         Single_Parent = 
            scenario_4_single_parent_household_with_2_children_ontario_works,
-         One_Person_On_Full_Income_Support = 
+         One_Person = 
            scenario_5_one_person_household_ontario_works 
   ) |> 
   tidyr::drop_na()
@@ -44,11 +44,11 @@ Without_sub_avg_rent_cleaned <-
          scenario_4_single_parent_household_with_2_children_ontario_works,
          scenario_5_one_person_household_ontario_works 
   ) |>
-  rename(Family_of_Four_on_Full_Income_Support = 
+  rename(Family_of_Four = 
            scenario_1_family_of_four_ontario_works,
-         Single_Parent_on_Full_Income_Support = 
+         Single_Parent = 
            scenario_4_single_parent_household_with_2_children_ontario_works,
-         One_Person_On_Full_Income_Support = 
+         One_Person = 
            scenario_5_one_person_household_ontario_works 
   ) |> 
   tidyr::drop_na()
@@ -62,11 +62,11 @@ Without_sub_mkt_rent_cleaned <-
          scenario_4_single_parent_household_with_2_children_ontario_works,
          scenario_5_one_person_household_ontario_works 
   ) |>
-  rename(Family_of_Four_on_Full_Income_Support = 
+  rename(Family_of_Four = 
            scenario_1_family_of_four_ontario_works,
-         Single_Parent_on_Full_Income_Support = 
+         Single_Parent = 
            scenario_4_single_parent_household_with_2_children_ontario_works,
-         One_Person_On_Full_Income_Support = 
+         One_Person = 
            scenario_5_one_person_household_ontario_works 
   ) |> 
   tidyr::drop_na()
@@ -77,3 +77,5 @@ write_csv(Without_sub_avg_rent_cleaned,
           "outputs/data/Without_subsidies_avg_rent_cleaned_data.csv")
 write_csv(Without_sub_mkt_rent_cleaned,
           "outputs/data/Without_sub_mkt_rent_cleaned_data.csv")
+
+
