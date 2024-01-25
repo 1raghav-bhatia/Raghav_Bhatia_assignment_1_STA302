@@ -1,0 +1,296 @@
+---
+title: "Toronto's Housing Subsidy Program"
+subtitle: "An Analysis of the Rent Burden for Low Income Families' "
+author: 
+  - Raghav Bhatia
+thanks: "Code and data are available at: https://github.com/1raghav-bhatia/Toronto_Housing_subsidies.git."
+date: January 23, 2024
+date-format: long
+abstract: "This paper anaylses the impact of toronto's housing subsidies programs on the rent burden low income households. The data reflects the costs of 3 types of low income households: 2 parent households, 1 parent households, and 1 person households. It finds that for all 3 types of households, the estimated rent burden would significantly be reduced due to the subsidies. This would significantly reduce the rent burden which makes up a big chunk of monthly expenses."
+format: pdf
+toc: true
+number-sections: true
+bibliography: references.bib
+---
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(knitr)
+library(opendatatoronto)
+library(janitor)
+library(lubridate)
+library(dplyr)
+```
+
+
+## Introduction
+
+The Toronto housing crises has reached a breaking point with home price growth quadrupling compared to growth in income and rents doubling compared to the same. While the city provides housing support in the form of housing subsidies, these seem to be mistargeted towards middle income households, fairly overshadowing low income households.
+
+Though this has been the case for a long while, a few years back, the Ontario government unveiled 3 new housing support programs under the umbrella of the Community Housing Renewal Strategy (CHRS). The CHRS is a comprehensive framework of policy measures designed to implement housing and homelessness initiatives, under which the following intiatives for housing relief fall:
+      
+      1. Ontario Priorities Housing Initiative (OPHI): This provides funding support                concerning housing supply, rental construction, and tenant support and                     affordable homeownership.
+			
+			2. Canada-Ontario Community Housing Initiative (COCHI): Funding support for the               construction and maintenance of community housing supply, and affordability                support for tenants.
+			
+			3. Canada-Ontario Housing Benefit (COHB): Direct funding support to tenants based of          their monthly rent and income.
+			
+The first program primarily targets homeowners, many of whom fall under the middle income category, which is why the focus of this paper will be on the second and third programs, which were designed as support programs for low income households. The second program is the primary gateway for vulnerable households looking for housing. When a household is looking for housing support initially, the second program is usually prioritized as the first measure in providing them with this support. COCHI is a rent-geared-to-income (RGI) program, which means that tenants pay a monthly rent that's set based on the tenants monthly income. This ensures that tenants have the sufficient financial ability to service their rent.
+	
+While COCHI is able to subsidize a good chunk of the distressed household's rent, it doesn't come close to providing the required relief to a certain subset of low income households that we will analyse in this paper. For such households, the program providing sufficient relief is the Canada-Ontario Housing Benefit (COHB), which is a direct payment to households. The COHB, as our data estimates, brings down the rent burden for the most cash-strapped segment of our data-set. The rent burden forms a significant part of low income households expenses (in some cases 90%), which is why reducing it is sufficient in alleviating financial distress for these households.
+
+
+
+
+## Data {#sec-data}
+
+```{r}
+
+#| echo: false
+#| warning: false
+#| message: false
+
+#Reading the cleaned data files.
+
+With_sub_cleaned <- read_csv("outputs/data/With_subsidies_cleaned_data.csv")
+
+Without_sub_avg_rent_cleaned <- read_csv(
+  "outputs/data/Without_subsidies_avg_rent_cleaned_data.csv")
+
+Without_sub_mkt_rent_cleaned <- read_csv(
+  "outputs/data/Without_sub_mkt_rent_cleaned_data.csv")
+```
+
+The data was sourced from opendatatoronto's [@opendatatoronto] 'Cost of Living in Toronto for Low Income Households' catalog and comprises of the data sets '2022 Income Scenario - Without Subsidies, Market Rent' [@without_subsidies_mkt_rent], '2022 Income Scenario - Without Subsidies, Average Rent' [@without_subsidies_avg_rent], '2022 Income Scenario - With Subsidies' [@with_subsidies]. The Data was last updated on 14th January 2024. The data was downloaded, cleaned and analyzed using R [@citeR] and its supported functionalities which are accessed through the packages tidyverse [@tidyverse], dplyr [@dplyr], ggplot2 [@ggplot2], janitor [@janitor], tibble [@tibble], knitr [@knitr] and readr [@readr].  
+
+### Overview
+
+To analyze the estimated impact of the housing programs, our entire data comprises of only 3 datasets. Each dataset contains the income and expenditure estimates for 9 different types of low income households. 
+
+The first data set '2022 Income Scenario - Without Subsidies, Market Rent' [@without_subsidies_mkt_rent] contains the estimated incomes and expenditures of the 9 types of low income families if they didn't receive any expense related subsidies, for example, subsidies relating to rent, childcare etc. 
+
+The second data set '2022 Income Scenario - Without Subsidies, Average Rent' [@without_subsidies_avg_rent] also contains estimated income and expenditure data for the 9 types of families, but factors in benefits under the Canada-Ontario Community Housing Initiative (COCHI). 
+
+The third data set '2022 Income Scenario - With Subsidies' [@with_subsidies] contains the same data as the second data set, but factors in subsidies under the Canada-Ontario Housing Benefit (COHB), and other subsidy programs. 
+
+Our focus in each data set will be on isolating the 'percentage of income required for rent' metric, which quantifies the rent burden for each type of household. To streamline our analysis, we'll also only focus on households that depend on full income support, as this is the segment of the low income population which faces the highest burden.
+
+### Household's Paying Market Rent
+
+The first data set '2022 Income Scenario - Without Subsidies, Market Rent' [@without_subsidies_mkt_rent] contains the income and expenditure data for 9 types of households. These households do not receive any subsidies and pay the market rate of rent. The 9 types of households are:
+
+ 1. Family of Four on Full Income Support
+ 2. Family of Four with Full Time Minimum Wage Earner
+ 3. Family of Four with Median Income
+ 4. Single Parent on Full Income Support
+ 5. One Person on Full Income Support
+ 6. One Person in the Ontario Disability Support Program
+ 7. One Person on Old Age Security
+ 8. Married Couple in the Ontario Disabled Support Program
+ 9. One Person Full Time Minimum Wage Earner
+ 
+For each type of household, the data pertaining to their different sources of income (Income from Employment, Shelter Allowance, Canada Child Benefit) have all been provided. This is complemented with data for each household on expense metrics such as rent, food, and transportation. While the expense data for each type of household has been provided in full, some of the income data is missing for households depending on the household type. As such, we analyze a subset of households which have the same data available and missing. This allows the results derived to have meaning for practical application and avoids the possibility of misinterpreting results due to lack of data. 
+
+For our current analysis, we consider only those household types on full income support, as the available data for these households is consistent across the board. These household types are also ideal for our analysis as they highlight the stark differences in rent burden across the 3 datasets.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| eval: true
+#| label: table-Without_sub_mkt_rent_cleaned
+#| tbl-cap: Household Data Without Subsidies Paying Market Rent
+
+# Gives a table of households paying market rent.
+kable(Without_sub_mkt_rent_cleaned, col.names = c("Category", "Item", "Family of Four",
+                                                  "Single Parent", "One Person"))
+```
+
+
+### Household's Paying Community Housing Rent
+
+The second data set '2022 Income Scenario - Without Subsidies, Average Rent' [@without_subsidies_avg_rent] contains the income and expenditure data for 9 types of households. These low income households do not receive any subsidies but end up paying a rent amount which is half that of market rent. From this we infer that these households derive the benefits of community housing under the Canada-Ontario Community Housing Initiative (COCHI), which is a Rent-Geared-to-Income program. The types of households in this dataset are the same as the types from the first dataset, with income and expense data being almost the same. The only difference is in the rent expense, as this dataset accounts for benefits under the COCHI, and in the Ontario Trillium Benefit which is based on the rent expense. 
+
+We consider households receiving Full Income Support in order to make a comparison with the first dataset. 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| eval: true
+#| label: table-Without_sub_avg_rent_cleaned
+#| tbl-cap: Household Data Without Subsidies Paying Community Housing Rent
+
+# Gives a table of households paying average (community housing) rent.
+kable(Without_sub_avg_rent_cleaned, col.names = c("Category", "Item", "Family of Four",
+                                                  "Single Parent", "One Person"))
+```
+
+### Households Paying Subsidized Rent
+
+The third data set '2022 Income Scenario - With Subsidies' [@with_subsidies] contains the income and expenditure data for 9 types of households. These low income households receive many subsidies like the rental subsidies under the Canada-Ontario Housing Benefit (COHB), childcare subsidies and transportation subsidies. The types of households in this dataset are the same as the types from the first dataset, with income and expense data being similar to the second dataset. The differences are in the rent expense, as this dataset accounts for benefits under the COHB, the Ontario Trillium Benefit which is based on the rent expense, and childcare and transportation expenses. 
+
+We consider households receiving Full Income Support as they're the most impacted group from COHB and also to make a comparison with the first 2 datasets. 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| eval: true
+#| label: table-With_sub_cleaned
+#| tbl-cap: Household Data With Subsidies
+
+# Gives a table of households receiving subsidies on rent.
+kable(With_sub_cleaned, col.names = c("Category", "Item", "Family of Four",
+                                                  "Single Parent", "One Person"))
+```
+
+## Results
+
+### The Impact of The Canada-Ontario Community Housing Initiative (COCHI)
+
+By Comparing Table 1 and Table 2, we observe that the rent burden for households on full income support is significantly reduced by the implementation of COCHI. This conclusion is reached by comparing the 'percentage of income required for rent' metric for each household type across the 2 tables. 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| eval: True
+
+##This code creates the function which gives a tibble of the percentage of
+## income spent on rent for a specific household type.
+
+percentage_rent <- function(data) {
+  household_type <- names(data)[3:5]
+  household_length <- length(household_type)
+  rents <- vector(length = household_length)
+  names(rents) <- household_type
+  for (household in household_type) {
+    rents[household] <- as.numeric(strsplit(as.character(data[12, household]), "%"))
+  }
+  rent_data <- tibble(household = names(rents), rent_percent  = as.numeric(rents))
+  rent_data
+}
+```
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| eval: True
+#| label: col_chart_1
+#| fig-width: 5
+#| fig-height: 4
+#| fig-cap: Households Rent Burden at Market Prices
+
+
+#Table for households without subsidies but paying market rent.
+
+Without_subsidies_mkt_rent <- percentage_rent(Without_sub_mkt_rent_cleaned)
+Without_sub_mkt_rent_chart <- Without_subsidies_mkt_rent |>
+  ggplot(aes(x = household, y = rent_percent)) +
+  geom_col() +
+  theme_minimal() + # Make the theme neater
+  labs(x = "Household on Income Support", y = "Percentage of Income for Rent") + # Make labels more meaningful
+  scale_y_continuous(limits = c(0, 200))
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| eval: True
+#| label: col_chart_2
+#| fig-width: 5
+#| fig-height: 4
+#| fig-cap: Households Rent Burden at Community Housing Prices
+
+
+#Table for households without subsidies but paying average rent which is
+#less than market rent.
+
+Without_sub_avg_rent <- percentage_rent(Without_sub_avg_rent_cleaned)
+Without_sub_avg_rent_chart <- Without_sub_avg_rent |>
+  ggplot(aes(x = household, y = rent_percent)) +
+  geom_col() +
+  theme_minimal() + # Make the theme neater
+  labs(x = "Household on Income Support", y = "Percentage of Income for Rent") + # Make labels more meaningful
+  scale_y_continuous(limits = c(0, 200))
+
+```
+
+The graphs show that for each household type on full income support, the rent burden reduced by 54.67% of income on average. This highlights a significant drop in the rent burden for these households, as without the COCHI, their rent burden was exceeding their income in all cases. 
+
+While the COCHI reduces the burden on these household types, it isn't sufficient as a standalone program for housing support as rent to income levels are at the minimum 67% for Four person households and reach as high as 142% for one person households.
+
+### The Impact of the Canada-Ontario Housing Benefit (COHB)
+
+By Comparing Table 2 and Table 3, we find that the rent burden for households on full income support is appropriately reduced by the implementation of COHB. We infer this conclusion by comparing the 'percentage of income required for rent' for each household type across the 2 tables. We find that the COHB does a wonderful job in reducing the rent burden to a financially feasible amount, at around 9-10% of income.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| eval: True
+#| label: col_chart_2_dup
+#| fig-width: 5
+#| fig-height: 4
+#| fig-cap: Households Rent Burden at Community Housing Prices
+
+
+#Table for households without subsidies but paying average rent which is
+#less than market rent.
+
+Without_sub_avg_rent <- percentage_rent(Without_sub_avg_rent_cleaned)
+Without_sub_avg_rent_chart <- Without_sub_avg_rent |>
+  ggplot(aes(x = household, y = rent_percent)) +
+  geom_col() +
+  theme_minimal() + # Make the theme neater
+  labs(x = "Household on Income Support", y = "Percentage of Income for Rent") + # Make labels more meaningful
+  scale_y_continuous(limits = c(0, 200))
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| eval: True
+#| label: col_chart_3
+#| fig-width: 5
+#| fig-height: 4
+#| fig-cap: Households Rent Burden With Subsidies
+
+
+#Table for households with subsidies 
+
+With_subsidies <- percentage_rent(With_sub_cleaned)
+With_subsidies_chart <- With_subsidies |>
+  ggplot(aes(x = household, y = rent_percent)) +
+  geom_col() +
+  theme_minimal() + # Make the theme neater
+  labs(x = "Household on Income Support", y = "Percentage of Income for Rent") + # Make labels more meaningful
+  scale_y_continuous(limits = c(0, 200))
+```
+
+
+For Four Person households, the burden is reduced from 71% to 9% of income while for Single Parent households, the burden is reduced from 67% to 9% of income. The biggest subsidization in expense happens for One Person households, whose rent burden is reduced from 142% to 10% of income. These facts highlight a strength of the program in reducing the rent burden to near equal levels for all types of households.  
+
+## Conclusion
+
+The results of this analysis highlight the estimated cost savings that accrue to low income households by taking advantage of Ontario's Housing relief initiatives. Each program is created in such a way to provide the required support depending on a household's financial situation. By taking account of various low income household scenarios, the program accounts for providing support to a wide section of society. 
+
+Our analysis, focused solely on finding the impact of these programs on households with full income support, highlighted the financial support that the most financially stressed segment of this population receives. In conduction our analysis, we were able to unearth the direct financial impact of each program on a households rent burden. 
+
+This analysis concludes by noting that hundreds of thousands of Canadians depend on housing support[5], which is why the estimated benefits of the 2 programs go a long way in ensuring welfare for the most financially critical segment of society. 
+
+\newpage
+
+## References
+
+

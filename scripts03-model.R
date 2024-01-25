@@ -18,7 +18,7 @@ With_sub_cleaned <- read_csv("outputs/data/With_subsidies_cleaned_data.csv")
 Without_sub_avg_rent_cleaned <- read_csv(
   "outputs/data/Without_subsidies_avg_rent_cleaned_data.csv")
 Without_sub_mkt_rent_cleaned <- read_csv(
-  "outputs/data/Without_sub_mkt_rent_cleaned_data.csv")
+  "outputs/data/Without_subsidies_mkt_rent_cleaned_data.csv")
 
 
 #### Model data ####

@@ -13,9 +13,16 @@ library(lubridate)
 library(dplyr)
 
 #### Clean data ####
-With_sub_raw <- read_csv("inputs/data/with_sub.csv") 
-Without_sub_avg_rent_raw <- read_csv("inputs/data/without_sub_avg_rent.csv")
-Without_sub_mkt_rent_raw <- read_csv("inputs/data/without_sub_mkt_rent.csv")
+
+## This reads the raw data files into the program.
+
+With_sub_raw <- read_csv("inputs/data/with_subsidies.csv") 
+Without_sub_avg_rent_raw <- read_csv("inputs/data/without_subsidies_avg_rent.csv")
+Without_sub_mkt_rent_raw <- read_csv("inputs/data/without_subsidies_mkt_rent.csv")
+
+## This cleans the data file for the household data with subsidies.The cleaning
+## consists of selecting data for households only on full income support and renaming
+## the column heads. 
 
 With_sub_cleaned <-
   With_sub_raw |>
@@ -35,6 +42,11 @@ With_sub_cleaned <-
   ) |> 
   tidyr::drop_na()
 
+## This cleans the data file for the household data without subsidies but paying 
+## average rent which is the same as rent under the COCHI. The cleaning consists
+## of selecting data for households only on full income support and renaming
+## the column heads. 
+
 Without_sub_avg_rent_cleaned <-
   Without_sub_avg_rent_raw |>
   janitor::clean_names() |>
@@ -52,6 +64,10 @@ Without_sub_avg_rent_cleaned <-
            scenario_5_one_person_household_ontario_works 
   ) |> 
   tidyr::drop_na()
+
+## This cleans the data file for the household data without subsidies but paying 
+## market rent. The cleaning consists of selecting data for households only on
+## full income support and renaming the column heads. 
 
 Without_sub_mkt_rent_cleaned <-
   Without_sub_mkt_rent_raw |>
@@ -72,10 +88,13 @@ Without_sub_mkt_rent_cleaned <-
   tidyr::drop_na()
 
 #### Save data ####
+
+## This stores the cleaned data files into the GitHub repository.
+
 write_csv(With_sub_cleaned, "outputs/data/With_subsidies_cleaned_data.csv")
 write_csv(Without_sub_avg_rent_cleaned,
           "outputs/data/Without_subsidies_avg_rent_cleaned_data.csv")
 write_csv(Without_sub_mkt_rent_cleaned,
-          "outputs/data/Without_sub_mkt_rent_cleaned_data.csv")
+          "outputs/data/Without_subsidies_mkt_rent_cleaned_data.csv")
 
 
