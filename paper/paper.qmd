@@ -188,6 +188,20 @@ percentage_rent <- function(data) {
 #| fig-height: 4
 #| fig-cap: Households Rent Burden at Market Prices
 
+##This code creates the function which gives a tibble of the percentage of
+## income spent on rent for a specific household type.
+
+percentage_rent <- function(data) {
+  household_type <- names(data)[3:5]
+  household_length <- length(household_type)
+  rents <- vector(length = household_length)
+  names(rents) <- household_type
+  for (household in household_type) {
+    rents[household] <- as.numeric(strsplit(as.character(data[12, household]), "%"))
+  }
+  rent_data <- tibble(household = names(rents), rent_percent  = as.numeric(rents))
+  rent_data
+}
 
 #Table for households without subsidies but paying market rent.
 
@@ -211,6 +225,20 @@ Without_sub_mkt_rent_chart <- Without_subsidies_mkt_rent |>
 #| fig-height: 4
 #| fig-cap: Households Rent Burden at Community Housing Prices
 
+##This code creates the function which gives a tibble of the percentage of
+## income spent on rent for a specific household type.
+
+percentage_rent <- function(data) {
+  household_type <- names(data)[3:5]
+  household_length <- length(household_type)
+  rents <- vector(length = household_length)
+  names(rents) <- household_type
+  for (household in household_type) {
+    rents[household] <- as.numeric(strsplit(as.character(data[12, household]), "%"))
+  }
+  rent_data <- tibble(household = names(rents), rent_percent  = as.numeric(rents))
+  rent_data
+}
 
 #Table for households without subsidies but paying average rent which is
 #less than market rent.
@@ -243,6 +271,20 @@ By Comparing Table 2 and Table 3, we find that the rent burden for households on
 #| fig-height: 4
 #| fig-cap: Households Rent Burden at Community Housing Prices
 
+##This code creates the function which gives a tibble of the percentage of
+## income spent on rent for a specific household type.
+
+percentage_rent <- function(data) {
+  household_type <- names(data)[3:5]
+  household_length <- length(household_type)
+  rents <- vector(length = household_length)
+  names(rents) <- household_type
+  for (household in household_type) {
+    rents[household] <- as.numeric(strsplit(as.character(data[12, household]), "%"))
+  }
+  rent_data <- tibble(household = names(rents), rent_percent  = as.numeric(rents))
+  rent_data
+}
 
 #Table for households without subsidies but paying average rent which is
 #less than market rent.
